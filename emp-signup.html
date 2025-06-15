@@ -67,7 +67,7 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          selectedBase64Image = reader.result; // remove data:image/... part
+          selectedBase64Image = reader.result.split(',')[1]; // ✅ Now correct for imgbb
           imagePreview.src = reader.result;
           imagePreview.style.display = 'block';
           imageActions.style.display = 'block';
