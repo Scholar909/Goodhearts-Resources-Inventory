@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="admin-dashboard.css"> <!-- Skip for now -->
+</head>
+<body>
+
+  <h2>Welcome, Admin</h2>
+
+  <!-- Top Summary Section -->
+  <section class="top-summary">
+    <div class="card">
+      <h3>Total Employees</h3>
+      <p id="totalEmployees">0</p>
+    </div>
+  </section>
+
+  <!-- Employees Table -->
+  <section class="table-section">
+    <h3>Employee List</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Bottom Menu -->
+<footer class="admin-footer">
+  <div class="footer-row" id="mainNav">
+    <div class="footer-icon" onclick="navigateTo('admin-dashboard.html')">
+      <span>🏠</span>
+      <p>Dashboard</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('admin-summary.html')">
+      <span>📦</span>
+      <p>Summary</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('admin-history.html')">
+      <span>🧾</span>
+      <p>Transactions</p>
+    </div>
+    <div class="footer-icon" id="toggleExpand">
+      <span>🔼</span>
+      <p>More</p>
+    </div>
+  </div>
+
+  <div class="footer-row hidden" id="extraNav">
+    <div class="footer-icon" onclick="navigateTo('admin-report.html')">
+      <span>📩</span>
+      <p>Reports</p>
+    </div>
+    <!-- Add more options here or leave blank -->
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+  </div>
+</footer>
+
+  <!-- Firebase Config & Script -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Transaction</title>
+  <!-- Link your CSS here later -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="/firebase-config.js" defer></script>
+  <script src="transaction.js" defer></script>
+</head>
+<body>
+
+  <main>
+    <h2>Transactions</h2>
+
+    <!-- Buttons Section -->
+    <section>
+      <button id="clockOutBtn">Clock Out</button>
+      <button id="downloadPDFBtn">Download PDF</button>
+    </section>
+
+    <!-- Daily Summary Table -->
+    <section>
+      <h3>Daily Transaction Summary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Total Amount</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="summaryTableBody">
+          <!-- Rows will be added by JS -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+<script type="module" src="admin-history.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f8fa;
+  color: #333;
+}
+
+.profile {
+  max-width: 500px;
+  margin: 40px auto 100px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3 {
+  text-align: center;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+#profileDetails p {
+  font-size: 15px;
+  margin: 10px 0;
+  padding: 6px 10px;
+  background: #f0f4f8;
+  border-radius: 8px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0 20px;
+  font-size: 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+#nokContainer p {
+  font-size: 14px;
+  margin: 6px 0;
+  padding: 6px 10px;
+  background: #e9f5ff;
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+}

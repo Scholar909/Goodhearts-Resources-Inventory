@@ -1,0 +1,87 @@
+<!-- 📦 SUMMARY PAGE -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Summary</title>
+  <link rel="stylesheet" href="summary.css" />
+</head>
+<body>
+
+  <div class="summary-container">
+
+    <!-- Top Section: Total Goods & Total Net Worth -->
+    <div class="top-summary-boxes">
+      <div class="summary-box" id="totalGoods">
+        <h3>Total Goods</h3>
+        <p id="goodsCount">0</p>
+      </div>
+
+      <div class="summary-box" id="totalWorth">
+        <h3>Total Net Worth</h3>
+        <p id="netWorth">₦0</p>
+      </div>
+    </div>
+
+    <!-- Popup Overlay (hidden by default) -->
+    <div class="popup-overlay" id="popupOverlay">
+      <div class="popup-content">
+        <h2 id="popupTitle"></h2>
+        <div class="product-list" id="productList"></div>
+
+        <!-- Add Product Button -->
+        <button id="addProductBtn">+ Add Product</button>
+
+        <!-- Close Button -->
+        <span class="close-popup" onclick="closePopup()">✖</span>
+      </div>
+    </div>
+
+    <!-- Hidden Modal for Add/Edit Product -->
+    <div class="modal" id="productModal">
+      <div class="modal-content">
+        <h3 id="modalTitle">Add Product</h3>
+        <form id="productForm">
+          <label>Product Name</label>
+          <input type="text" id="productName" required />
+
+          <label>Price (₦)</label>
+          <input type="number" id="productPrice" required />
+
+          <label>Available</label>
+          <div id="availableField">
+            0 + <input type="number" id="availableAdd" />
+          </div>
+
+          <button type="submit" id="saveProductBtn">Save</button>
+          <button type="button" onclick="closeModal()">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Product Sales Table -->
+    <div class="sales-table">
+      <h3>Product Sales</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price (₦)</th>
+            <th>Amount Sold</th>
+            <th>Sold By</th>
+            <th>Date & Time</th>
+          </tr>
+        </thead>
+        <tbody id="salesTableBody">
+          <!-- Sales rows inserted here -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="summary.js"></script>
+</body>
+</html>

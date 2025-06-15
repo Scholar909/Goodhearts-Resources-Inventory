@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Refund Product</title>
+  <link rel="stylesheet" href="emp-refund.css" />
+  <link rel="stylesheet" href="emp-footer.css" />
+</head>
+<body>
+  <div class="refund glass">
+    <h2>Refund Product</h2>
+    <p class="notice">Inform employer before refund. Not for POS refunds.</p>
+    <input type="text" id="product" placeholder="Product Name" />
+    <input type="number" id="amount" placeholder="Amount Refunded" />
+    <textarea id="reason" placeholder="Reason for refund"></textarea>
+    <button onclick="refundProduct()">Refund</button>
+  </div>
+  
+<footer class="admin-footer">
+  <div class="footer-row" id="mainNav">
+    <div class="footer-icon" onclick="navigateTo('dashboard.html')">
+      <span>🏠</span>
+      <p>Dashboard</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('summary.html')">
+      <span>📦</span>
+      <p>Summary</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('transaction.html')">
+      <span>🧾</span>
+      <p>Transactions</p>
+    </div>
+    <div class="footer-icon" id="toggleExpand">
+      <span>🔼</span>
+      <p>More</p>
+    </div>
+  </div>
+
+  <div class="footer-row hidden" id="extraNav">
+    <div class="footer-icon" onclick="navigateTo('report.html')">
+      <span>📩</span>
+      <p>Reports</p>
+    </div>
+    <!-- Add more options here or leave blank -->
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+  </div>
+</footer>
+
+  <script type="module">
+    import { db, collection, doc, getDoc, setDoc, auth } from './firebase.js';
+    import { serverTimestamp } from 'firebase/firestore';
+
+    async function refundProduct() {
+      const name = document.getElementById('product').value;
+      const amount = parseInt(document.getElementById('amount').value);
+      const reason = document.getElementById('reason').value;
+
+      const snap = await getDoc(doc(db, 'products', name));
+      if (!snap.exists()) return alert('Product not found.');
+      const price = snap.data().price * amount;
+
+      await setDoc(doc(collection(db, 'sales')), {
+        product: name,
+        amount,
+        price,
+        reason,
+        type: 'refund',
+        employee: auth.currentUser.uid,
+        time: serverTimestamp()
+      });
+
+      alert('Refund recorded');
+      location.reload();
+    }
+  </script>
+  <script type="module" src="emp-refund.js"></script>
+  <script type="module" src="emp-footer.js"></script>
+</body>
+</html>

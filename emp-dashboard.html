@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="emp-dashboard.css" />
+  <link rel="stylesheet" href="emp-footer.css" />
+</head>
+<body>
+  <div class="dashboard glass">
+    <h2 id="welcomeMessage">Welcome, [Employee]</h2>
+
+    <div class="nav-grid">
+      <button onclick="location.href='profile.html'">👤 Profile</button>
+      <button onclick="location.href='sell.html'">🛒 Sell</button>
+      <button onclick="location.href='refund.html'">🔁 Refund</button>
+      <button onclick="location.href='transactions.html'">📜 Transaction History</button>
+      <button onclick="location.href='report.html'">📝 Report / Complain</button>
+    </div>
+
+    <div class="rules">
+      <h3>📌 Rules</h3>
+      <p>
+        Ask before you do anything you are not sure of.<br />
+        If you do something wrong, you will be held accountable for it, and it will be deducted from your salary.
+      </p>
+    </div>
+  </div>
+  
+<footer class="admin-footer">
+  <div class="footer-row" id="mainNav">
+    <div class="footer-icon" onclick="navigateTo('dashboard.html')">
+      <span>🏠</span>
+      <p>Dashboard</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('summary.html')">
+      <span>📦</span>
+      <p>Summary</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('transaction.html')">
+      <span>🧾</span>
+      <p>Transactions</p>
+    </div>
+    <div class="footer-icon" id="toggleExpand">
+      <span>🔼</span>
+      <p>More</p>
+    </div>
+  </div>
+
+  <div class="footer-row hidden" id="extraNav">
+    <div class="footer-icon" onclick="navigateTo('report.html')">
+      <span>📩</span>
+      <p>Reports</p>
+    </div>
+    <!-- Add more options here or leave blank -->
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+  </div>
+</footer>
+
+  <script type="module" src="emp-dashboard.js"></script>
+  <script type="module" src="emp-footer.js"></script>
+</body>
+</html>

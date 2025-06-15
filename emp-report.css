@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+}
+
+.report {
+  max-width: 500px;
+  margin: 70px auto 100px auto;
+  padding: 25px;
+  background: #ffffffcc;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  backdrop-filter: blur(6px);
+}
+
+.report h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.report input,
+.report textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 18px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.report textarea {
+  height: 150px;
+  resize: vertical;
+  font-family: 'Poppins', sans-Serif;
+}
+
+.report button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.report button:hover {
+  background-color: #45a049;
+}

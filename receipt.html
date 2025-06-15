@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Receipt View</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="receipt-container">
+    <h2>Receipt View</h2>
+
+    <section class="receipt-details">
+      <div><strong>Date:</strong> <span id="receiptDate"></span></div>
+      <div><strong>Total Items Sold:</strong> <span id="totalItems"></span></div>
+      <div><strong>Total Quantity:</strong> <span id="totalQuantity"></span></div>
+      <div><strong>Total Sales Amount:</strong> ₦<span id="totalAmount"></span></div>
+    </section>
+
+    <section class="receipt-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Sold By</th>
+            <th>Date & Time</th>
+          </tr>
+        </thead>
+        <tbody id="receiptTableBody">
+          <!-- Entries will be populated here -->
+        </tbody>
+      </table>
+    </section>
+
+    <button onclick="window.history.back()" class="exit-btn">Exit</button>
+  </main>
+
+  <script src="receipt.js" type="module"></script>
+</body>
+</html>

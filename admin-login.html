@@ -1,0 +1,62 @@
+<!-- admin_login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="login-container glass">
+    <h2>Login</h2>
+    <select id="loginType">
+      <option value="admin">Admin</option>
+      <option value="employee">Employee</option>
+    </select>
+    <input id="email" type="email" placeholder="Email" required />
+    <input id="password" type="password" placeholder="Password" required />
+    <button id="loginBtn">Login</button>
+    <p id="loginStatus" class="status-msg"></p>
+  </div>
+
+  <script type="module">
+    import {
+      auth,
+      signInWithEmailAndPassword
+    } from './firebase.js';
+
+    const hardcodedAdminEmail = 'admin@goodheartscoop.local';
+    const hardcodedAdminPassword = 'AdminPass247';
+
+    async function handleLogin() {
+      const type = document.getElementById('loginType').value;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const status = document.getElementById('loginStatus');
+
+      status.innerText = '';
+
+      if (type === 'admin') {
+        if (email === hardcodedAdminEmail && password === hardcodedAdminPassword) {
+          localStorage.setItem('userType', 'admin');
+          window.location.href = 'admin-dashboard.html';
+        } else {
+          status.innerText = 'Incorrect admin email or password.';
+        }
+      } else {
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          localStorage.setItem('userType', 'employee');
+          window.location.href = 'emp-dashboard.html';
+        } catch (err) {
+          status.innerText = 'Login failed. Check your credentials.';
+        }
+      }
+    }
+
+    // Attach event listener
+    document.getElementById('loginBtn').addEventListener('click', handleLogin);
+  </script>
+</body>
+</html>

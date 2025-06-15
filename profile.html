@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile</title>
+  <link rel="stylesheet" href="emp-profile.css" />
+  <link rel="stylesheet" href="emp-footer.css" />
+</head>
+<body>
+  <div class="profile glass">
+    <h2>My Profile</h2>
+    <div id="profileDetails"></div>
+
+    <h3>Edit Address</h3>
+    <input type="text" id="newAddress" placeholder="Enter new address" />
+    <button onclick="updateAddress()">Update Address</button>
+
+    <h3>Next of Kin Numbers</h3>
+    <div id="nokContainer"></div>
+    <input type="text" id="nokInput" placeholder="Add Next of Kin Number" />
+    <button onclick="addNOK()">Add</button>
+
+    <button onclick="logout()" class="logout-btn">Log Out</button>
+  </div>
+
+  <script type="module">
+    import {
+      auth, db, doc, getDoc, updateDoc,
+      arrayUnion, signOut
+    } from './firebase.js';
+
+    const profileDiv = document.getElementById('profileDetails');
+    const nokContainer = document.getElementById('nokContainer');
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) return location.href = 'admin_login.html';
+
+      const ref = doc(db, 'employees', user.uid);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+
+      // Check for admin-blocked
+      if (data.blocked) {
+        document.body.innerHTML = `
+          <div style="text-align:center; padding: 40px;">
+            <h2>Your account has been blocked by Admin.</h2>
+            <p>Please contact your administrator for more information.</p>
+          </div>`;
+        return;
+      }
+
+      // Check for NOK deadline violation
+      const createdAt = data.createdAt?.toDate?.();
+      const today = new Date();
+      const daysPassed = createdAt ? Math.floor((today - createdAt) / (1000 * 60 * 60 * 24)) : 0;
+
+      const nokList = data.nok || [];
+      if (daysPassed >= 3 && nokList.length === 0) {
+        await updateDoc(ref, { blocked: true }); // Auto-block
+        document.body.innerHTML = `
+          <div style="text-align:center; padding: 40px;">
+            <h2>Account Blocked</h2>
+            <p>You did not add Next of Kin numbers within 3 days.<br>
+            Contact Admin to unblock your account.</p>
+          </div>`;
+        return;
+      }
+
+      // Populate profile
+      profileDiv.innerHTML = `
+        <p><strong>Name:</strong> ${data.name}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Gender:</strong> ${data.gender}</p>
+        <p><strong>DOB:</strong> ${data.dob}</p>
+        <p><strong>Address:</strong> ${data.address}</p>
+        <p><strong>Previous Address:</strong> ${data.previousAddress || 'N/A'}</p>
+        <p><strong>Account Created:</strong> ${createdAt?.toDateString?.() || 'N/A'}</p>
+      `;
+
+      renderNOK(nokList);
+    });
+
+    function renderNOK(list) {
+      nokContainer.innerHTML = list.map(num => `<p>${num}</p>`).join('');
+    }
+
+    async function addNOK() {
+      const num = document.getElementById('nokInput').value.trim();
+      if (!num) return alert("Please enter a valid number.");
+
+      const ref = doc(db, 'employees', auth.currentUser.uid);
+      const snap = await getDoc(ref);
+      const data = snap.data();
+
+      const currentList = data.nok || [];
+      if (currentList.length >= 3) return alert('Maximum 3 NOK numbers allowed.');
+
+      await updateDoc(ref, {
+        nok: arrayUnion(num)
+      });
+      location.reload();
+    }
+
+    async function updateAddress() {
+      const newAddr = document.getElementById('newAddress').value.trim();
+      if (!newAddr) return alert("Please enter a new address.");
+
+      const ref = doc(db, 'employees', auth.currentUser.uid);
+      const snap = await getDoc(ref);
+      const data = snap.data();
+
+      await updateDoc(ref, {
+        previousAddress: data.address,
+        address: newAddr
+      });
+      location.reload();
+    }
+
+    function logout() {
+      signOut(auth).then(() => location.href = 'admin-login.html');
+    }
+  </script>
+
+  <script type="module" src="emp-footer.js"></script>
+</body>
+</html>
