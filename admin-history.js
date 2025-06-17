@@ -121,27 +121,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🔓 UNLOCK MANUALLY
+// 🔓 UNLOCK MANUALLY
 if (unlockBtn) {
   unlockBtn.addEventListener("click", async () => {
-    // Remove the global clock-out
-    await deleteDoc(doc(db, "settings", "loginControl"));
+    try {
+      // Remove the global clock-out
+      await deleteDoc(doc(db, "settings", "loginControl"));
 
-    // Reset individual employee clock-out and unlockOverride
-    const employeesSnapshot = await getDocs(collection(db, "employees"));
-    const updates = [];
+      // Get all employees
+      const employeesSnapshot = await getDocs(collection(db, "employees"));
 
-    employeesSnapshot.forEach(async (empDoc) => {
-      const empRef = doc(db, "employees", empDoc.id);
-      updates.push(setDoc(empRef, {
-        clockedOut: false,
-        unlockOverride: true
-      }, { merge: true }));
-    });
+      // Loop through and update each employee's unlock status
+      for (const empDoc of employeesSnapshot.docs) {
+        const empRef = doc(db, "employees", empDoc.id);
+        await setDoc(empRef, {
+          clockedOut: false,
+          unlockOverride: true
+        }, { merge: true });
+      }
 
-    await Promise.all(updates);
-
-    alert("🔓 Login access restored manually for all employees.");
+      alert("✅ Clock-out overrides applied. Employees can now login.");
+    } catch (error) {
+      console.error("Unlock failed:", error);
+      alert("❌ Failed to unlock employee login access.");
+    }
   });
 }
 

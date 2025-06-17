@@ -57,7 +57,12 @@ h2 {
 
 /* Employee Table Section */
 .table-section {
-  margin: 20px;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden; /* No horizontal scroll unless table needs it */
 }
 
 .table-section h3 {
@@ -76,12 +81,15 @@ h2 {
   border-radius: 10px;
   padding: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* Enhanced Table */
 table {
   width: 100%;
   min-width: 600px;
+  table-layout: auto;
   border-collapse: collapse;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
@@ -103,6 +111,18 @@ th, td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   text-align: left;
   white-space: nowrap;
+}
+
+th:nth-child(1), td:nth-child(1){
+  width: 30%;
+}
+
+th:nth-child(2), td:nth-child(2){
+  width: 40%;
+}
+
+th:nth-child(3), td:nth-child(3){
+  width: 30%;
 }
 
 tbody tr:hover {
@@ -150,49 +170,85 @@ td button:last-child {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: 'Poppins', sans-serif;
+  z-index: 100;
+  animation: slideUp 0.4s ease;
+  padding: 0.5rem 0;
 }
 
+/* Footer Row Layout */
 .footer-row {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 0;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
+/* Footer Icons */
 .footer-icon {
   text-align: center;
   flex: 1;
-  color: #fff;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  color: #fff;
+  transition: transform 0.2s ease;
 }
 
 .footer-icon:hover {
   transform: scale(1.1);
 }
 
+/* Icon and Text */
 .footer-icon span {
+  font-size: 22px;
   display: block;
-  font-size: 20px;
+  color: #00e5ff;
 }
 
 .footer-icon p {
   font-size: 12px;
-  margin-top: 4px;
+  margin: 4px 0 0;
+  color: #e0f7fa;
 }
 
+/* Empty Placeholder */
 .footer-icon.empty {
   visibility: hidden;
 }
 
-/* Utility Classes */
+/* Hidden Toggleable Extra Menu */
 .hidden {
   display: none;
 }
+
+/* Slide-Up Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Fix for Tiny Screens */
+@media (max-width: 400px) {
+  .footer-icon span {
+    font-size: 18px;
+  }
+  .footer-icon p {
+    font-size: 10px;
+  }
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 600px) {

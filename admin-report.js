@@ -1,4 +1,4 @@
-// Import Firebase modules
+// ======= Import Firebase modules =======
 import {
   db,
   getMessaging,
@@ -17,10 +17,10 @@ import {
   orderBy
 } from './firebase.js';
 
-// Initialize Firebase Messaging
+// ======= Initialize Firebase Messaging =======
 const messaging = getMessaging();
 
-// Request permission and get FCM token
+// ======= Request permission and get FCM token =======
 async function initFCM() {
   try {
     if (!("Notification" in window)) {
@@ -37,7 +37,7 @@ async function initFCM() {
 
       if (token) {
         console.log("✅ Admin FCM Token:", token);
-        // You can store the token in Firestore if needed
+        // Optionally save the token in Firestore here
       } else {
         console.warn("⚠️ No FCM token retrieved.");
       }
@@ -49,7 +49,7 @@ async function initFCM() {
   }
 }
 
-// Handle in-app push messages
+// ======= Handle in-app push messages =======
 onMessage(messaging, (payload) => {
   console.log("🔔 Foreground message received:", payload);
   const { title, body } = payload.notification;
@@ -67,34 +67,37 @@ onMessage(messaging, (payload) => {
   }
 });
 
-// Table to render report rows
+// ======= Table body reference =======
 const reportTableBody = document.getElementById('reportTableBody');
 
-// Load reports and auto-update on changes (most recent first)
+// ======= Load reports and auto-update live =======
 function loadReportsLive() {
   const reportsQuery = query(
     collection(db, 'employeeReports'),
-    orderBy('date', 'desc') // Sort by date descending
+    orderBy('date', 'desc')
   );
 
   onSnapshot(reportsQuery, (snapshot) => {
-    reportTableBody.innerHTML = ""; // Clear old data
+    reportTableBody.innerHTML = ""; // Clear old table rows
+
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       const row = document.createElement('tr');
+
       row.innerHTML = `
         <td>${data.employeeName || data.employeeEmail}</td>
         <td>${data.title}</td>
         <td>${data.date}</td>
         <td><button onclick="alert('${data.message.replace(/'/g, "\\'")}')">View</button></td>
       `;
+
       reportTableBody.appendChild(row);
 
-      // Send WhatsApp alert only if not already sent
+      // Only send WhatsApp alert if not already sent
       if (data.sendWhatsApp !== false) {
         sendWhatsAppNotification(data.employeeName, data.title, data.date, data.employeeEmail);
 
-        // Mark as sent in Firestore
+        // Mark report as notified
         const reportRef = doc(db, 'employeeReports', docSnap.id);
         updateDoc(reportRef, { sendWhatsApp: false }).catch(err =>
           console.error("❌ Error updating sendWhatsApp:", err)
@@ -104,11 +107,12 @@ function loadReportsLive() {
   });
 }
 
-// Send WhatsApp alert to admin
+// ======= Send WhatsApp notification to admin =======
 function sendWhatsAppNotification(name, title, date, email) {
   const phone = "2348118663849";
   const apikey = "4093230";
   const url = "https://scholar909.github.io/Goodhearts-Resources-Inventory/admin-report.html";
+
   const message = `🆕 *New Employee Report Received*\n👤 Name: ${name}\n📄 Title: ${title}\n📅 Date: ${date}\n📧 Email: ${email}\n🔗 View at: ${url}`;
 
   fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(message)}&apikey=${apikey}`)
@@ -122,6 +126,6 @@ function sendWhatsAppNotification(name, title, date, email) {
     .catch(error => console.error("🔴 WhatsApp error:", error));
 }
 
-// Start
+// ======= Start execution =======
 initFCM();
 loadReportsLive();

@@ -109,3 +109,34 @@ body {
     opacity: 1;
   }
 }
+
+@media (max-width: 480px) {
+  .report {
+    margin-top: 1rem;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    box-shadow: none;
+    margin-bottom: 4rem;
+  }
+
+  .report h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .report input,
+  .report textarea {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .report textarea {
+    height: 120px;
+  }
+
+  .report button {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+}

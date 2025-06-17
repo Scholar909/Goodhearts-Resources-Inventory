@@ -128,3 +128,47 @@ button[onclick*="employee_dashboard"]:hover {
   0% { transform: scale(0.9); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+@media (max-width: 480px) {
+  body {
+    padding: 1rem 0.5rem 2rem;
+    align-items: flex-start;
+  }
+
+  .refund {
+    padding: 1.2rem;
+    border-radius: 12px;
+    max-width: 100%;
+    margin-top: 1rem;
+    box-shadow: none;
+    margin-bottom: 2.5rem;
+  }
+
+  .refund h2 {
+    font-size: 1.4rem;
+  }
+
+  .refund input,
+  .refund textarea,
+  .refund select {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .refund button {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .notice {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+
+  button[onclick*="employee_dashboard"] {
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

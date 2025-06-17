@@ -49,7 +49,8 @@
       db,
       createUserWithEmailAndPassword,
       setDoc,
-      doc
+      doc,
+      updateProfile
     } from './firebase.js';
 
     const imgbbApiKey = '76b5c9b8204181e4bb53f33eb96b8efb'; 
@@ -123,6 +124,11 @@
         // Create user
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = userCred.user.uid;
+        
+        // Set displayName in Firebase Auth
+        await updateProfile(userCred.user, {
+          displayName: name
+        });
 
         // Save data to Firestore
         await setDoc(doc(db, 'employees', uid), {

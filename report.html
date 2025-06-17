@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Report</title>
+  <title>Employee Report</title>
   <link rel="stylesheet" href="emp-report.css" />
   <link rel="stylesheet" href="emp-footer.css" />
 </head>
@@ -47,7 +47,7 @@
         <span>🔁</span>
         <p>Refund</p>
       </div>
-      <div class="footer-icon" onclick="logout()" class="logout-btn">
+      <div class="footer-icon" onclick="logout()">
         <span>🔓</span>
         <p>Logout</p>
       </div>
@@ -55,52 +55,52 @@
   </footer>
 
   <script type="module">
-    import { db, collection, doc, setDoc, auth } from './firebase.js';
-
+    import { db, collection, addDoc, auth } from './firebase.js';
     import { onAuthStateChanged } from './firebase.js';
 
     function sendReport() {
-  const titleInput = document.getElementById('title');
-  const detailsInput = document.getElementById('details');
-  const button = document.querySelector("button");
+      const titleInput = document.getElementById('title');
+      const detailsInput = document.getElementById('details');
+      const button = document.querySelector("button");
 
-  const title = titleInput.value.trim();
-  const details = detailsInput.value.trim();
+      const title = titleInput.value.trim();
+      const details = detailsInput.value.trim();
 
-  if (!title || !details) {
-    alert("Please fill in both the title and report details.");
-    return;
-  }
+      if (!title || !details) {
+        alert("Please fill in both the title and report details.");
+        return;
+      }
 
-  button.disabled = true;
-  button.textContent = "Sending...";
+      button.disabled = true;
+      button.textContent = "Sending...";
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      alert("User not logged in.");
-      button.disabled = false;
-      button.textContent = "Send";
-      return;
-    }
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          alert("User not logged in.");
+          button.disabled = false;
+          button.textContent = "Send";
+          return;
+        }
 
-    const employeeName = user.displayName || "Unknown";
-    const employeeEmail = user.email || "No Email";
-    const date = new Date().toLocaleString();
+        const employeeName = user.displayName || "Unknown";
+        const employeeEmail = user.email || "No Email";
+        const date = new Date().toLocaleString();
 
-    try {
-      await setDoc(doc(collection(db, 'employeeReports')), {
-        title,
-        message: details,
-        employeeName,
-        employeeEmail,
-        date,
-        sendWhatsApp: true
-      });
+        try {
+          // Save to Firestore
+          await addDoc(collection(db, 'employeeReports'), {
+            title,
+            message: details,
+            employeeName,
+            employeeEmail,
+            date,
+            sendWhatsApp: true
+          });
 
-      // WhatsApp message here...
-      const phone = "2348118663849";
-      const apikey = "4093230";
-      const message = `📩 *New Employee Report Submitted*
+          // Send WhatsApp message
+          const phone = "2348118663849";
+          const apikey = "4093230";
+          const message = `📩 *New Employee Report Submitted*
 👤 *Name:* ${employeeName}
 📧 *Email:* ${employeeEmail}
 📝 *Title:* ${title}
@@ -108,21 +108,25 @@
 📅 *Date:* ${date}
 🔗 [View Report](https://yourdomain.com/admin-report.html)`;
 
-      await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(message)}&apikey=${apikey}`)
-        .then(response => {
-          if (!response.ok) throw new Error("WhatsApp message failed");
-        });
+          const encodedMsg = encodeURIComponent(message);
+          const whatsappUrl = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodedMsg}&apikey=${apikey}`;
 
-      alert("Report submitted and admin notified on WhatsApp.");
-      location.href = 'employee_dashboard.html';
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred while sending your report. Please try again.");
-      button.disabled = false;
-      button.textContent = "Send";
+          const response = await fetch(whatsappUrl);
+          if (!response.ok) {
+            console.warn("Report sent but WhatsApp notification failed.");
+          }
+
+          alert("✅ Report submitted and admin notified.");
+          location.href = 'employee_dashboard.html';
+
+        } catch (error) {
+          console.error("❌ Error submitting report:", error);
+          alert("❌ An error occurred while sending your report. Please try again.");
+          button.disabled = false;
+          button.textContent = "Send";
+        }
+      });
     }
-  });
-}
 
     window.sendReport = sendReport;
 
@@ -131,7 +135,6 @@
     }
 
     function logout() {
-      // Add logout logic here if needed
       alert("Logged out");
     }
   </script>

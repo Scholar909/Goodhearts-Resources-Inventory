@@ -1,6 +1,6 @@
 // Import Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 import { getFirestore, doc, addDoc, getDoc, setDoc, getDocs, updateDoc, deleteDoc, orderBy, collection, arrayUnion, query, serverTimestamp, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-messaging.js";
@@ -54,5 +54,6 @@ export {
   messaging,
   firebaseConfig,
   initializeApp,
-  onSnapshot
+  onSnapshot,
+  updateProfile
 };

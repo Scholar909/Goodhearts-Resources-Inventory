@@ -29,7 +29,7 @@
     db,
     doc,
     getDoc,
-    setDoc // ✅ Required for resetting unlockOverride
+    setDoc
   } from './firebase.js';
 
   const hardcodedAdminEmail = 'admin@goodheartscoop.local';
@@ -87,11 +87,10 @@
           return;
         }
 
-        const currentHour = new Date().getHours();
-
-        if ((clockedOutGlobally || employeeData.clockedOut) && !employeeData.unlockOverride && currentHour < 6) {
+        // 🔒 Enforce clockout rule without time limit
+        if ((clockedOutGlobally || employeeData.clockedOut) && !employeeData.unlockOverride) {
           await auth.signOut();
-          status.innerText = 'You have clocked out. Login allowed after 6 AM or when admin unlocks.';
+          status.innerText = 'You have clocked out. Login is currently disabled. Contact admin.';
           return;
         }
 

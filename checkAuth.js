@@ -1,18 +1,26 @@
 // checkAuth.js
-import { auth, getAuth, onAuthStateChanged } from './firebase.js';
+import { getAuth, onAuthStateChanged } from './firebase.js';
 
-const authInstance = getAuth();
+const auth = getAuth();
 const userType = localStorage.getItem('userType');
-const currentPath = window.location.pathname;
 
-onAuthStateChanged(authInstance, (user) => {
-  if (!user) {
-    // If not logged in
-    if (currentPath.includes('admin' || 'employee')) {
-      window.location.href = 'admin-login.html';
-    } else {
-      window.location.href = 'index.html'; // employee login
+// ✅ If Admin, allow access without Firebase auth
+if (userType === 'admin') {
+  // Admins don’t use Firebase Auth, just localStorage
+  // Allow access
+} else if (userType === 'employee') {
+  // ✅ Firebase session check only for employees
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      redirectToLogin();
     }
-  } 
-  }
-});
+  });
+} else {
+  // No valid userType
+  redirectToLogin();
+}
+
+function redirectToLogin() {
+  localStorage.clear(); // safer to clear all
+  window.location.href = 'admin-login.html';
+}

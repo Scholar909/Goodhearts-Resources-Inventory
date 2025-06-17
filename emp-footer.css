@@ -7,11 +7,13 @@
   width: 100%;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   font-family: 'Poppins', sans-serif;
   z-index: 100;
   animation: slideUp 0.4s ease;
+  padding: 0.5rem 0;
 }
 
 /* Footer Row Layout */
@@ -19,7 +21,8 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 12px 0;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* Footer Icons */
@@ -67,5 +70,15 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Responsive Fix for Tiny Screens */
+@media (max-width: 400px) {
+  .footer-icon span {
+    font-size: 18px;
+  }
+  .footer-icon p {
+    font-size: 10px;
   }
 }

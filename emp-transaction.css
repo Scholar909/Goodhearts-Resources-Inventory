@@ -125,3 +125,35 @@ body {
     transform: translateY(0);
   }
 }
+
+@media (max-width: 480px) {
+  body {
+    padding: 40px 10px 80px;
+  }
+
+  .transactions {
+    margin: 20px 5px;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .transactions h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  #filter {
+    padding: 10px;
+    font-size: 13.5px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .card p {
+    font-size: 13px;
+  }
+}

@@ -26,15 +26,33 @@ const statusEl = document.getElementById('loginStatus');
 // Page protection: Redirect if not authenticated
 const restrictedPages = ['admin-dashboard.html', 'emp-dashboard.html', 'employee-view.html'];
 const currentPage = window.location.pathname.split('/').pop();
+const userType = localStorage.getItem('userType');
+
+const authInstance = getAuth();
 
 if (restrictedPages.includes(currentPage)) {
-  const userType = localStorage.getItem('userType');
-  getAuth().onAuthStateChanged((user) => {
-    if (!user || !userType) {
+  if (userType === 'admin') {
+    // Allow access to admin pages only
+    if (currentPage.startsWith('emp-')) {
+      alert("Admins cannot access employee pages.");
       localStorage.clear();
       window.location.href = 'admin-login.html';
     }
-  });
+    // Otherwise, allow access
+  } else if (userType === 'employee') {
+    // For employees, check Firebase session
+    authInstance.onAuthStateChanged((user) => {
+      if (!user || currentPage.startsWith('admin-')) {
+        alert("Access denied.");
+        localStorage.clear();
+        window.location.href = 'admin-login.html';
+      }
+    });
+  } else {
+    // No userType at all
+    localStorage.clear();
+    window.location.href = 'admin-login.html';
+  }
 }
 
 // Handle login
@@ -88,7 +106,6 @@ loginBtn?.addEventListener('click', handleLogin);
 
 // =================== ADMIN DASHBOARD SECTION =================== //
 
-const authInstance = getAuth();
 const totalEmployeesEl = document.getElementById('totalEmployees');
 const employeeTableBody = document.getElementById('employeeTableBody');
 
@@ -108,17 +125,11 @@ async function loadEmployees() {
       row.innerHTML = `
         <td>${data.name}</td>
         <td>${data.phone}</td>
-        <td>${data.blocked ? 'Blocked ❌' : 'Active ✅'}</td>
-        <td>
-          <button onclick="toggleBlock('${docSnap.id}', ${data.blocked})">
-            ${data.blocked ? 'Unblock' : 'Block'}
-          </button>
-        </td>
-        <td>
-          <button onclick="deleteEmployee('${docSnap.id}')">Delete</button>
-        </td>
-        <td>
-          <button onclick="viewEmployee('${docSnap.id}')">View</button>
+        <td>${data.blocked ? 'Blocked ❌' : 'Active ✅'}
+        <button onclick="toggleBlock('${docSnap.id}', ${data.blocked})">
+            ${data.blocked ? 'Unblock' : 'Block'}</button>
+        <button onclick="deleteEmployee('${docSnap.id}')">Delete</button>
+        <button onclick="viewEmployee('${docSnap.id}')">View</button>
         </td>
       `;
 
@@ -168,7 +179,7 @@ window.viewEmployee = function (id) {
   window.location.href = 'employee-view.html';
 };
 
-// Navigation toggle
+// ✅ Navigation toggle
 const toggleExpandBtn = document.getElementById('toggleExpand');
 if (toggleExpandBtn) {
   toggleExpandBtn.addEventListener('click', () => {
@@ -185,23 +196,30 @@ if (toggleExpandBtn) {
   });
 }
 
-// Navigation helpers
+// ✅ Navigation helpers
 window.navigateTo = function (page) {
   window.location.href = page;
 };
 
-// Secure logout
-window.logout = async function () {
-  try {
-    await signOut(authInstance);
-    localStorage.clear();
-    window.location.href = 'admin-login.html';
-  } catch (error) {
-    console.error('Logout failed:', error);
-  }
-};
+// ✅ Updated logout function
+const logoutBtn = document.getElementById('logout-btn');
 
-// Load employees if on dashboard
+logoutBtn?.addEventListener('click', async () => {
+  const userType = localStorage.getItem('userType');
+
+  if (userType === 'employee') {
+    try {
+      await signOut(auth); // Only sign out Firebase for employees
+    } catch (error) {
+      console.warn('No active Firebase session, skipping signOut.');
+    }
+  }
+
+  localStorage.clear(); // Remove all session data
+  window.location.href = 'admin-login.html';
+});
+
+// ✅ Load employees if on dashboard
 if (employeeTableBody) {
   loadEmployees();
 }
