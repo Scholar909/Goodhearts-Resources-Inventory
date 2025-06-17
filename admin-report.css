@@ -1,0 +1,86 @@
+body {
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+  margin: 0;
+  background: #121212;
+  color: #eee;
+}
+
+header {
+  background-color: #00c853; /* bright green */
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 8px rgba(0, 200, 83, 0.4);
+}
+
+main {
+  padding: 20px;
+  max-width: 100%;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Table Styling */
+table {
+  min-width: 700px; /* Keeps horizontal scroll if needed */
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: #eee;
+}
+
+thead {
+  background-color: rgba(0, 200, 83, 0.3);
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.95rem;
+  white-space: nowrap; /* Prevent line breaks */
+}
+
+th {
+  font-weight: 700;
+  color: #00c853;
+  letter-spacing: 0.05em;
+}
+
+td button {
+  padding: 6px 10px;
+  border: none;
+  background-color: #00c853;
+  color: #121212;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+td button:hover {
+  background-color: #009624;
+}
+
+/* Scrollbar for horizontal overflow on main */
+main::-webkit-scrollbar {
+  height: 8px;
+}
+
+main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+main::-webkit-scrollbar-thumb {
+  background-color: #00c853;
+  border-radius: 4px;
+}

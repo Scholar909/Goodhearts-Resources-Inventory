@@ -4,12 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Transaction</title>
-  <!-- Link your CSS here later -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="/firebase-config.js" defer></script>
-  <script src="transaction.js" defer></script>
+  <link rel="stylesheet" href="admin-history.css" />
+  <link rel="stylesheet" href="admin-dashboard.css" />
 </head>
 <body>
 
@@ -19,25 +15,69 @@
     <!-- Buttons Section -->
     <section>
       <button id="clockOutBtn">Clock Out</button>
+      <button id="unlocktBtn">Unlock Login</button>
       <button id="downloadPDFBtn">Download PDF</button>
     </section>
 
     <!-- Daily Summary Table -->
-    <section>
-      <h3>Daily Transaction Summary</h3>
+<section>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Total</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+    </table>
+    <div class="scrollable-tbody">
       <table>
-        <thead>
-          <tr>
-            <th>Total Amount</th>
-            <th>Date</th>
-          </tr>
-        </thead>
         <tbody id="summaryTableBody">
-          <!-- Rows will be added by JS -->
+          <!-- Dynamic rows go here -->
         </tbody>
       </table>
-    </section>
+    </div>
+  </div>
+</section>
   </main>
+  
+<footer class="admin-footer">
+  <div class="footer-row" id="mainNav">
+    <div class="footer-icon" onclick="navigateTo('admin-dashboard.html')">
+      <span>🏠</span>
+      <p>Dashboard</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('admin-summary.html')">
+      <span>📦</span>
+      <p>Summary</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('admin-history.html')">
+      <span>🧾</span>
+      <p>Transactions</p>
+    </div>
+    <div class="footer-icon" id="toggleExpand">
+      <span>🔼</span>
+      <p>More</p>
+    </div>
+  </div>
+
+  <div class="footer-row hidden" id="extraNav">
+    <div class="footer-icon" onclick="navigateTo('admin-report.html')">
+      <span>📩</span>
+      <p>Reports</p>
+    </div>
+    <!-- Add more options here or leave blank -->
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon" onclick="logout()" class="logout-btn">
+      <span>🔓</span>
+      <p>Logout</p>
+    </div>
+  </div>
+</footer>
+
 <script type="module" src="admin-history.js"></script>
+<script type="module" src="admin-dashboard.js"></script>
+<script type="module" src="checkAuth.js"></script>
 </body>
 </html>

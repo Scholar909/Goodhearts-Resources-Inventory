@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin - Reports</title>
-  <link rel="stylesheet" href="report.css" />
+  <link rel="stylesheet" href="admin-dashboard.css" />
+  <link rel="stylesheet" href="admin-report.css" />
 </head>
 <body>
   <header>
@@ -26,7 +27,44 @@
       </tbody>
     </table>
   </main>
+  
+<footer class="admin-footer">
+  <div class="footer-row" id="mainNav">
+    <div class="footer-icon" onclick="navigateTo('admin-dashboard.html')">
+      <span>🏠</span>
+      <p>Dashboard</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('admin-summary.html')">
+      <span>📦</span>
+      <p>Summary</p>
+    </div>
+    <div class="footer-icon" onclick="navigateTo('admin-history.html')">
+      <span>🧾</span>
+      <p>Transactions</p>
+    </div>
+    <div class="footer-icon" id="toggleExpand">
+      <span>🔼</span>
+      <p>More</p>
+    </div>
+  </div>
+
+  <div class="footer-row hidden" id="extraNav">
+    <div class="footer-icon" onclick="navigateTo('admin-report.html')">
+      <span>📩</span>
+      <p>Reports</p>
+    </div>
+    <!-- Add more options here or leave blank -->
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon empty"></div>
+    <div class="footer-icon" onclick="logout()" class="logout-btn">
+      <span>🔓</span>
+      <p>Logout</p>
+    </div>
+  </div>
+</footer>
 
   <script type="module" src="admin-report.js"></script>
+  <script type="module" src="admin-dashboard.js"></script>
+  <script type="module" src="checkAuth.js"></script>
 </body>
 </html>

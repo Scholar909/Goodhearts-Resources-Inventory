@@ -35,7 +35,8 @@
       <option>Male</option>
       <option>Female</option>
     </select>
-    <input id="dob" type="date" placeholder="DOB" required />
+    <label for="dob">Date of Birth</label>
+    <input id="dob" type="date" name="DOB" required />
     <input id="address" type="text" placeholder="Home Address" required />
     <input id="password" type="password" placeholder="Password" required />
     <button type="submit">Sign Up</button>
@@ -67,7 +68,7 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          selectedBase64Image = reader.result.split(',')[1]; // ✅ Now correct for imgbb
+          selectedBase64Image = reader.result.split(',')[1]; // remove data:image/... part
           imagePreview.src = reader.result;
           imagePreview.style.display = 'block';
           imageActions.style.display = 'block';

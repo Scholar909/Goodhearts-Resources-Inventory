@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
 }
 
 /* Body Styling */
@@ -20,10 +20,10 @@ body {
 .sell {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 2rem 2.5rem;
+  padding: 2.5rem 2rem;
   width: 90%;
-  max-width: 400px;
-  backdrop-filter: blur(12px);
+  max-width: 420px;
+  backdrop-filter: blur(14px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   color: #fff;
   animation: popIn 0.5s ease;
@@ -31,31 +31,51 @@ body {
 
 .sell h2 {
   text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  margin-bottom: 1.8rem;
+  font-size: 1.9rem;
   letter-spacing: 1px;
 }
 
-/* Input Fields */
-.sell input {
+/* Input & Select Fields */
+.sell input,
+.sell select {
   width: 100%;
   padding: 0.9rem 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.3rem;
   border: none;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
   font-size: 1rem;
   transition: all 0.3s ease;
+  appearance: none;
 }
 
+/* Placeholder & Focus Styles */
 .sell input::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.sell input:focus {
+.sell input:focus,
+.sell select:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.3);
+}
+
+/* Select Field Styling */
+.sell select {
+  cursor: pointer;
+}
+
+/* Custom Dropdown Arrow */
+.sell select::-ms-expand {
+  display: none;
+}
+.sell select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'14'%20height%3D'10'%20viewBox%3D'0%200%2014%2010'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20fill%3D'%23ffffff'%20d%3D'M7%2010L0%200h14z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.8rem;
 }
 
 /* Sell Button */
@@ -78,10 +98,17 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

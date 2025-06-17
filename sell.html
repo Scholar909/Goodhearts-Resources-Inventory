@@ -9,24 +9,25 @@
 <body>
   <div class="sell glass">
     <h2>Sell Product</h2>
-    <input type="text" id="product" placeholder="Product Name" />
-    <input type="number" id="amount" placeholder="Amount Sold" />
-    <button id="sellBtn">Sell</button>
+    <select id="productSelect"></select>
+    <input type="number" id="sellAmount" placeholder="Quantity Sold" />
+    <button id="sellBtn">Submit Sale</button>
+    <p id="sellStatus"></p>
   </div>
   
 <footer class="admin-footer">
   <div class="footer-row" id="mainNav">
-    <div class="footer-icon" onclick="navigateTo('dashboard.html')">
+    <div class="footer-icon" onclick="navigateTo('emp-dashboard.html')">
       <span>🏠</span>
       <p>Dashboard</p>
     </div>
-    <div class="footer-icon" onclick="navigateTo('summary.html')">
-      <span>📦</span>
-      <p>Summary</p>
+    <div class="footer-icon" onclick="navigateTo('profile.html')">
+      <span>👤</span>
+      <p>Profile</p>
     </div>
-    <div class="footer-icon" onclick="navigateTo('transaction.html')">
-      <span>🧾</span>
-      <p>Transactions</p>
+    <div class="footer-icon" onclick="navigateTo('sell.html')">
+      <span>🛒</span>
+      <p>Sell</p>
     </div>
     <div class="footer-icon" id="toggleExpand">
       <span>🔼</span>
@@ -35,18 +36,27 @@
   </div>
 
   <div class="footer-row hidden" id="extraNav">
+    <div class="footer-icon" onclick="navigateTo('transactions.html')">
+      <span>📜</span>
+      <p>Transactions</p>
+    </div>
     <div class="footer-icon" onclick="navigateTo('report.html')">
       <span>📩</span>
       <p>Reports</p>
     </div>
-    <!-- Add more options here or leave blank -->
-    <div class="footer-icon empty"></div>
-    <div class="footer-icon empty"></div>
-    <div class="footer-icon empty"></div>
+    <div class="footer-icon" onclick="navigateTo('transactions.html')">
+      <span>🔁</span>
+      <p>Refund</p>
+    </div>
+    <div class="footer-icon" onclick="logout()" class="logout-btn">
+      <span>🔓</span>
+      <p>Logout</p>
+    </div>
   </div>
 </footer>
 
   <script type="module" src="emp-sell.js"></script>
   <script type="module" src="emp-footer.js"></script>
+  <script type="module" src="checkAuth.js"></script>
 </body>
 </html>

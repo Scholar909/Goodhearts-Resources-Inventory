@@ -4,76 +4,119 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GoodHeart Resources Repository</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+  color: #fff;
+}
 
-    body {
-      background-color: #f4f4f4;
-      color: #333;
-      line-height: 1.6;
-      padding: 20px;
-    }
+/* Body Styling */
+body {
+  height: 100%;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  animation: fadeIn 0.6s ease-in;
+}
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
+/* Container Card Styling */
+.container {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  margin-top: 10px;
+  padding: 1.5rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  animation: popIn 0.5s ease;
+}
 
-    h1 {
-      color: #0e4c92;
-      margin-bottom: 15px;
-    }
+/* Headings */
+h1, h2 {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1rem;
+}
 
-    h2 {
-      margin-top: 30px;
-      color: #0e4c92;
-    }
+h1 {
+  font-size: 2rem;
+}
 
-    p {
-      margin: 10px 0;
-    }
+h2 {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
 
-    .section {
-      margin-top: 20px;
-    }
+/* Paragraphs */
+p, .note {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0.6rem 0;
+  font-size: 1rem;
+}
 
-    .button {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #0e4c92;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: 0.3s ease;
-    }
+.note {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
 
-    .button:hover {
-      background-color: #063970;
-    }
+/* Sections */
+.section {
+  margin-top: 1rem;
+}
 
-    .note {
-      font-size: 0.9rem;
-      margin-top: 10px;
-      color: #555;
-    }
+/* Buttons */
+.button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 0.8rem;
+  background: #00c853;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  user-select: none;
+}
 
-    .job-section {
-      background-color: #eef6ff;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 25px;
-    }
-  </style>
+.button:hover {
+  background: #00b248;
+}
+
+/* Job Section */
+.job-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem 1rem;
+  border-radius: 20px;
+  margin-top: 1rem;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+</style>
 </head>
 <body>
   <div class="container">
@@ -99,7 +142,7 @@
         We are always on the lookout for dedicated individuals. Before applying, ensure you are located near CDC Plaza, Nasarawa Street, Abuja.
       </p>
       <p class="note"><strong>Requirements:</strong> Valid ID, Residence near Abuja, Basic experience with materials management or warehouse support.</p>
-      <a href="#" class="button">Contact Business Owner</a>
+      <a href="tel: +2348065597364" class="button">Contact Business Owner</a>
     </div>
   </div>
 </body>

@@ -13,76 +13,130 @@
     <textarea id="details" placeholder="Write your report here..."></textarea>
     <button onclick="sendReport()">Send</button>
   </div>
-  
-<footer class="admin-footer">
-  <div class="footer-row" id="mainNav">
-    <div class="footer-icon" onclick="navigateTo('dashboard.html')">
-      <span>🏠</span>
-      <p>Dashboard</p>
-    </div>
-    <div class="footer-icon" onclick="navigateTo('summary.html')">
-      <span>📦</span>
-      <p>Summary</p>
-    </div>
-    <div class="footer-icon" onclick="navigateTo('transaction.html')">
-      <span>🧾</span>
-      <p>Transactions</p>
-    </div>
-    <div class="footer-icon" id="toggleExpand">
-      <span>🔼</span>
-      <p>More</p>
-    </div>
-  </div>
 
-  <div class="footer-row hidden" id="extraNav">
-    <div class="footer-icon" onclick="navigateTo('report.html')">
-      <span>📩</span>
-      <p>Reports</p>
+  <footer class="admin-footer">
+    <div class="footer-row" id="mainNav">
+      <div class="footer-icon" onclick="navigateTo('emp-dashboard.html')">
+        <span>🏠</span>
+        <p>Dashboard</p>
+      </div>
+      <div class="footer-icon" onclick="navigateTo('profile.html')">
+        <span>👤</span>
+        <p>Profile</p>
+      </div>
+      <div class="footer-icon" onclick="navigateTo('sell.html')">
+        <span>🛒</span>
+        <p>Sell</p>
+      </div>
+      <div class="footer-icon" id="toggleExpand">
+        <span>🔼</span>
+        <p>More</p>
+      </div>
     </div>
-    <!-- Add more options here or leave blank -->
-    <div class="footer-icon empty"></div>
-    <div class="footer-icon empty"></div>
-    <div class="footer-icon empty"></div>
-  </div>
-</footer>
 
-<script type="module">
-  import { db, collection, doc, setDoc, auth, serverTimestamp } from './firebase.js';
+    <div class="footer-row hidden" id="extraNav">
+      <div class="footer-icon" onclick="navigateTo('transactions.html')">
+        <span>📜</span>
+        <p>Transactions</p>
+      </div>
+      <div class="footer-icon" onclick="navigateTo('report.html')">
+        <span>📩</span>
+        <p>Reports</p>
+      </div>
+      <div class="footer-icon" onclick="navigateTo('refund.html')">
+        <span>🔁</span>
+        <p>Refund</p>
+      </div>
+      <div class="footer-icon" onclick="logout()" class="logout-btn">
+        <span>🔓</span>
+        <p>Logout</p>
+      </div>
+    </div>
+  </footer>
 
-  async function sendReport() {
-    const titleInput = document.getElementById('title');
-    const detailsInput = document.getElementById('details');
-    const button = document.querySelector("button");
+  <script type="module">
+    import { db, collection, doc, setDoc, auth } from './firebase.js';
 
-    const title = titleInput.value.trim();
-    const details = detailsInput.value.trim();
+    import { onAuthStateChanged } from './firebase.js';
 
-    if (!title || !details) {
-      alert("Please fill in both the title and report details.");
+    function sendReport() {
+  const titleInput = document.getElementById('title');
+  const detailsInput = document.getElementById('details');
+  const button = document.querySelector("button");
+
+  const title = titleInput.value.trim();
+  const details = detailsInput.value.trim();
+
+  if (!title || !details) {
+    alert("Please fill in both the title and report details.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Sending...";
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("User not logged in.");
+      button.disabled = false;
+      button.textContent = "Send";
       return;
     }
 
-    button.disabled = true;
-    button.textContent = "Sending...";
+    const employeeName = user.displayName || "Unknown";
+    const employeeEmail = user.email || "No Email";
+    const date = new Date().toLocaleString();
 
     try {
-      await setDoc(doc(collection(db, 'reports')), {
+      await setDoc(doc(collection(db, 'employeeReports')), {
         title,
-        details,
-        employee: auth.currentUser.uid,
-        time: serverTimestamp()
+        message: details,
+        employeeName,
+        employeeEmail,
+        date,
+        sendWhatsApp: true
       });
 
-      alert("Report submitted successfully.");
+      // WhatsApp message here...
+      const phone = "2348118663849";
+      const apikey = "4093230";
+      const message = `📩 *New Employee Report Submitted*
+👤 *Name:* ${employeeName}
+📧 *Email:* ${employeeEmail}
+📝 *Title:* ${title}
+🗒 *Details:* ${details}
+📅 *Date:* ${date}
+🔗 [View Report](https://yourdomain.com/admin-report.html)`;
+
+      await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(message)}&apikey=${apikey}`)
+        .then(response => {
+          if (!response.ok) throw new Error("WhatsApp message failed");
+        });
+
+      alert("Report submitted and admin notified on WhatsApp.");
       location.href = 'employee_dashboard.html';
     } catch (error) {
-      console.error("Failed to submit report:", error);
-      alert("An error occurred while submitting the report. Please try again.");
+      console.error("Error:", error);
+      alert("An error occurred while sending your report. Please try again.");
       button.disabled = false;
       button.textContent = "Send";
     }
-  }
-</script>
+  });
+}
+
+    window.sendReport = sendReport;
+
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+
+    function logout() {
+      // Add logout logic here if needed
+      alert("Logged out");
+    }
+  </script>
+
   <script type="module" src="emp-footer.js"></script>
+  <script type="module" src="checkAuth.js"></script>
 </body>
 </html>

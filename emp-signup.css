@@ -1,68 +1,159 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Base Reset */
+* {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
   height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
 }
 
+/* Glass Form */
 form.glass {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   width: 340px;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
+  animation: fadeIn 0.4s ease;
 }
 
+/* Heading */
 form.glass h2 {
   margin-bottom: 20px;
-  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
 }
 
+/* Inputs & Selects */
 form.glass input,
 form.glass select {
   margin: 10px 0;
-  padding: 10px;
+  padding: 12px;
   width: 100%;
   border: none;
   border-radius: 10px;
-  background: #f1f1f1;
-  font-size: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
+  outline: none;
+}
+
+form.glass input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 form.glass input[type="file"] {
-  padding: 5px;
-  background: #ffffff;
+  padding: 8px;
+  background: #fff;
+  color: #333;
+  border-radius: 10px;
 }
 
+/* Select Arrow */
+form.glass select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20fill%3D'%23ffffff'%20height%3D'12'%20viewBox%3D'0%200%2024%2024'%20width%3D'12'%20xmlns%3D'http://www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.8rem;
+}
+
+/* Button */
 form.glass button {
   margin-top: 15px;
-  padding: 10px;
+  padding: 12px;
   width: 100%;
   border: none;
   border-radius: 10px;
-  background-color: #4CAF50;
-  color: white;
-  font-size: 15px;
+  background-color: #00c853;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
 form.glass button:hover {
-  background-color: #45a049;
+  background-color: #00b248;
 }
 
+/* Status Message */
 .status-msg {
   margin-top: 15px;
   font-size: 13px;
-  color: red;
+  color: #ff5e5e;
   text-align: center;
+}
+
+/* Optional Table Scroll Styling */
+.table-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 15px;
+  margin: 20px 0;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.4s ease;
+}
+
+.table-card table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+.table-card th,
+.table-card td {
+  padding: 12px 14px;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: left;
+}
+
+/* Responsive Support */
+@media (max-width: 400px) {
+  form.glass {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  form.glass input,
+  form.glass select {
+    font-size: 0.9rem;
+  }
+
+  form.glass button {
+    font-size: 0.95rem;
+  }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

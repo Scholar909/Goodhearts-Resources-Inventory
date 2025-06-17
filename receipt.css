@@ -1,0 +1,144 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.6s ease-in;
+  color: #fff;
+}
+
+/* Receipt Container */
+.receipt-container {
+  max-width: 820px;
+  width: 90%;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.5s ease;
+}
+
+/* Heading */
+h2 {
+  text-align: center;
+  margin-bottom: 1.8rem;
+  font-size: 1.9rem;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+/* Receipt Details */
+.receipt-details div {
+  margin: 10px 0;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.receipt-details span {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* Table Section */
+.receipt-table {
+  margin-top: 2rem;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: #fff;
+  min-width: 600px;
+}
+
+thead {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+th, td {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  color: #f0f0f0;
+}
+
+/* Exit Button */
+.exit-btn {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: #ff4d4d;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.exit-btn:hover {
+  background: #e33c3c;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .receipt-details div {
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+
+  .receipt-container {
+    margin: 20px;
+    padding: 1.5rem;
+  }
+
+  .receipt-table {
+    padding: 0.8rem;
+  }
+}

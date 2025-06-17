@@ -1,113 +1,68 @@
-// sell.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { auth, db, collection, getDocs, addDoc, doc, updateDoc } from './firebase.js';
 
-// TODO: Replace with your actual Firebase config
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_MSG_ID",
-  appId: "YOUR_APP_ID"
-};
+const productSelect = document.getElementById('productSelect');
+const amountInput = document.getElementById('sellAmount');
+const sellBtn = document.getElementById('sellBtn');
+const sellStatus = document.getElementById('sellStatus');
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const productInput = document.getElementById("product");
-const amountInput = document.getElementById("amount");
-const sellBtn = document.getElementById("sellBtn");
-
-// Sample admin product list with prices (replace with Firebase fetch)
-const productList = {
-  "Book A": 1500,
-  "Book B": 2000,
-  "Gadget X": 5000
-};
-
-// Auto-suggestion (basic)
-productInput.addEventListener("input", () => {
-  const datalistId = "product-suggestions";
-  let datalist = document.getElementById(datalistId);
-  if (!datalist) {
-    datalist = document.createElement("datalist");
-    datalist.id = datalistId;
-    document.body.appendChild(datalist);
-    productInput.setAttribute("list", datalistId);
-  }
-
-  datalist.innerHTML = "";
-  const val = productInput.value.toLowerCase();
-  Object.keys(productList).forEach((name) => {
-    if (name.toLowerCase().includes(val)) {
-      const option = document.createElement("option");
-      option.value = name;
-      datalist.appendChild(option);
-    }
+// Load products into the dropdown
+async function loadProducts() {
+  const snapshot = await getDocs(collection(db, 'products'));
+  productSelect.innerHTML = '<option value="">Select Product</option>';
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    productSelect.innerHTML += `<option value="${docSnap.id}" data-name="${data.name}" data-price="${data.price}" data-amount="${data.amount}">${data.name} (₦${data.price} | In Stock: ${data.amount})</option>`;
   });
-});
+}
 
-// Handle Sell
-sellBtn.addEventListener("click", async () => {
-  const product = productInput.value.trim();
-  const amount = parseInt(amountInput.value);
+// Handle sale
+sellBtn.addEventListener('click', async () => {
+  sellStatus.textContent = '';
+  const productId = productSelect.value;
+  const sellAmount = parseInt(amountInput.value);
 
-  if (!product || isNaN(amount) || amount <= 0) {
-    alert("Please enter valid product and amount.");
+  if (!productId || isNaN(sellAmount) || sellAmount <= 0) {
+    sellStatus.textContent = 'Please select a valid product and quantity.';
     return;
   }
 
-  const unitPrice = productList[product];
-  if (!unitPrice) {
-    alert("Product not found in the list.");
+  const selectedOption = productSelect.selectedOptions[0];
+  const name = selectedOption.dataset.name;
+  const price = +selectedOption.dataset.price;
+  const stock = +selectedOption.dataset.amount;
+
+  if (sellAmount > stock) {
+    sellStatus.textContent = 'Not enough stock available.';
     return;
   }
 
-  const totalPrice = unitPrice * amount;
-
-  const confirmed = confirm("Ensure you have received full payment from the customer before clicking Sell. Any mistake will be deducted from your salary.");
-  if (!confirmed) return;
+  const user = auth.currentUser;
+  const soldBy = user?.email || 'Unknown';
 
   try {
-    await addDoc(collection(db, "sales"), {
-      product,
-      amount,
-      price: totalPrice,
-      date: serverTimestamp()
+    // Add sale to Firestore
+    await addDoc(collection(db, 'sales'), {
+      name,
+      price,
+      amount: sellAmount,
+      soldBy,
+      type: 'sold',
+      timestamp: new Date()
     });
 
-    showSuccessModal(`Successfully recorded sale of ${amount} ${product}(s) for ₦${totalPrice}.`);
-    productInput.value = "";
-    amountInput.value = "";
+    // Update product stock
+    const newStock = stock - sellAmount;
+    await updateDoc(doc(db, 'products', productId), { amount: newStock });
 
-  } catch (error) {
-    alert("Error saving sale: " + error.message);
+    sellStatus.style.color = 'green';
+    sellStatus.textContent = 'Sale recorded successfully.';
+    loadProducts(); // Refresh dropdown with updated stock
+    amountInput.value = '';
+  } catch (err) {
+    console.error(err);
+    sellStatus.style.color = 'red';
+    sellStatus.textContent = 'Error recording sale: ' + err.message;
   }
 });
 
-// Success Modal
-function showSuccessModal(message) {
-  const modal = document.createElement("div");
-  modal.className = "modal-glass";
-  modal.innerHTML = `
-    <div class="modal-content">
-      <p>${message}</p>
-      <button class="close-modal">OK</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  modal.querySelector(".close-modal").onclick = () => {
-    modal.remove();
-  };
-
-  setTimeout(() => {
-    if (document.body.contains(modal)) modal.remove();
-  }, 5000);
-}
+loadProducts();

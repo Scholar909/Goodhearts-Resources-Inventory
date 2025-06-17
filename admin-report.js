@@ -1,32 +1,127 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+// Import Firebase modules
+import {
+  db,
+  getMessaging,
+  getToken,
+  onMessage,
+  firebaseConfig
+} from './firebase.js';
 
-const firebaseConfig = {
-  // your firebase config here
-};
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  doc,
+  updateDoc,
+  query,
+  orderBy
+} from './firebase.js';
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// Initialize Firebase Messaging
+const messaging = getMessaging();
 
-const reportTableBody = document.getElementById("reportTableBody");
+// Request permission and get FCM token
+async function initFCM() {
+  try {
+    if (!("Notification" in window)) {
+      console.warn("🚫 This browser does not support notifications.");
+      return;
+    }
 
-async function loadReports() {
-  const snapshot = await getDocs(collection(db, "reports"));
-  reportTableBody.innerHTML = "";
+    const permission = await Notification.requestPermission();
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const row = document.createElement("tr");
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: "BL_Zo95CQLz__GsaESagJQDfLcHfNRRhlK53jMeT6lqm7QKAocCWn5YJEit7DiEvMNcKUDvZnHw6QR5i-JhXK_E"
+      });
 
-    row.innerHTML = `
-      <td>${data.employeeName}</td>
-      <td>${data.title}</td>
-      <td>${new Date(data.timestamp.toDate()).toLocaleDateString()}</td>
-      <td><button onclick="alert(\`${data.fullReport.replace(/`/g, "'")}\`)">View</button></td>
-    `;
+      if (token) {
+        console.log("✅ Admin FCM Token:", token);
+        // You can store the token in Firestore if needed
+      } else {
+        console.warn("⚠️ No FCM token retrieved.");
+      }
+    } else {
+      console.warn("❌ Notifications permission not granted.");
+    }
+  } catch (error) {
+    console.error("🔴 FCM Token Error:", error);
+  }
+}
 
-    reportTableBody.appendChild(row);
+// Handle in-app push messages
+onMessage(messaging, (payload) => {
+  console.log("🔔 Foreground message received:", payload);
+  const { title, body } = payload.notification;
+
+  if ("Notification" in window && Notification.permission === "granted") {
+    const notification = new Notification(title, {
+      body,
+      icon: "logo.png",
+      data: { url: "https://scholar909.github.io/Goodhearts-Resources-Inventory/admin-report.html" }
+    });
+
+    notification.onclick = () => {
+      window.location.href = notification.data.url;
+    };
+  }
+});
+
+// Table to render report rows
+const reportTableBody = document.getElementById('reportTableBody');
+
+// Load reports and auto-update on changes (most recent first)
+function loadReportsLive() {
+  const reportsQuery = query(
+    collection(db, 'employeeReports'),
+    orderBy('date', 'desc') // Sort by date descending
+  );
+
+  onSnapshot(reportsQuery, (snapshot) => {
+    reportTableBody.innerHTML = ""; // Clear old data
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${data.employeeName || data.employeeEmail}</td>
+        <td>${data.title}</td>
+        <td>${data.date}</td>
+        <td><button onclick="alert('${data.message.replace(/'/g, "\\'")}')">View</button></td>
+      `;
+      reportTableBody.appendChild(row);
+
+      // Send WhatsApp alert only if not already sent
+      if (data.sendWhatsApp !== false) {
+        sendWhatsAppNotification(data.employeeName, data.title, data.date, data.employeeEmail);
+
+        // Mark as sent in Firestore
+        const reportRef = doc(db, 'employeeReports', docSnap.id);
+        updateDoc(reportRef, { sendWhatsApp: false }).catch(err =>
+          console.error("❌ Error updating sendWhatsApp:", err)
+        );
+      }
+    });
   });
 }
 
-loadReports();
+// Send WhatsApp alert to admin
+function sendWhatsAppNotification(name, title, date, email) {
+  const phone = "2348118663849";
+  const apikey = "4093230";
+  const url = "https://scholar909.github.io/Goodhearts-Resources-Inventory/admin-report.html";
+  const message = `🆕 *New Employee Report Received*\n👤 Name: ${name}\n📄 Title: ${title}\n📅 Date: ${date}\n📧 Email: ${email}\n🔗 View at: ${url}`;
+
+  fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(message)}&apikey=${apikey}`)
+    .then(response => {
+      if (response.ok) {
+        console.log("✅ WhatsApp alert sent");
+      } else {
+        console.error("❌ WhatsApp failed with status:", response.status);
+      }
+    })
+    .catch(error => console.error("🔴 WhatsApp error:", error));
+}
+
+// Start
+initFCM();
+loadReportsLive();

@@ -1,4 +1,3 @@
-<!-- admin_login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,43 +19,95 @@
     <p id="loginStatus" class="status-msg"></p>
   </div>
 
-  <script type="module">
-    import {
-      auth,
-      signInWithEmailAndPassword
-    } from './firebase.js';
+<script type="module">
+  import {
+    auth,
+    signInWithEmailAndPassword
+  } from './firebase.js';
 
-    const hardcodedAdminEmail = 'admin@goodheartscoop.local';
-    const hardcodedAdminPassword = 'AdminPass247';
+  import {
+    db,
+    doc,
+    getDoc,
+    setDoc // ✅ Required for resetting unlockOverride
+  } from './firebase.js';
 
-    async function handleLogin() {
-      const type = document.getElementById('loginType').value;
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const status = document.getElementById('loginStatus');
+  const hardcodedAdminEmail = 'admin@goodheartscoop.local';
+  const hardcodedAdminPassword = 'AdminPass247';
 
-      status.innerText = '';
+  async function handleLogin() {
+    const type = document.getElementById('loginType').value;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const status = document.getElementById('loginStatus');
 
-      if (type === 'admin') {
-        if (email === hardcodedAdminEmail && password === hardcodedAdminPassword) {
-          localStorage.setItem('userType', 'admin');
-          window.location.href = 'admin-dashboard.html';
-        } else {
-          status.innerText = 'Incorrect admin email or password.';
-        }
+    status.innerText = '';
+
+    if (type === 'admin') {
+      if (email === hardcodedAdminEmail && password === hardcodedAdminPassword) {
+        localStorage.setItem('userType', 'admin');
+        window.location.href = 'admin-dashboard.html';
       } else {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          localStorage.setItem('userType', 'employee');
-          window.location.href = 'emp-dashboard.html';
-        } catch (err) {
-          status.innerText = 'Login failed. Check your credentials.';
+        status.innerText = 'Incorrect admin email or password.';
+      }
+    } else {
+      if (email === hardcodedAdminEmail) {
+        status.innerText = 'Admins must select "Admin" to login.';
+        return;
+      }
+
+      try {
+        // 🔒 Check if login is globally locked
+        const loginControlDoc = await getDoc(doc(db, "settings", "loginControl"));
+        let clockedOutGlobally = false;
+
+        if (loginControlDoc.exists()) {
+          const clockedOutUntil = new Date(loginControlDoc.data().clockedOutUntil);
+          const now = new Date();
+          clockedOutGlobally = now < clockedOutUntil;
         }
+
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
+
+        const employeeRef = doc(db, 'employees', uid);
+        const employeeSnap = await getDoc(employeeRef);
+
+        if (!employeeSnap.exists()) {
+          await auth.signOut();
+          status.innerText = 'Account does not exist or has been removed.';
+          return;
+        }
+
+        const employeeData = employeeSnap.data();
+
+        if (employeeData.blocked) {
+          await auth.signOut();
+          status.innerText = 'Your account has been blocked by the admin.';
+          return;
+        }
+
+        const currentHour = new Date().getHours();
+
+        if ((clockedOutGlobally || employeeData.clockedOut) && !employeeData.unlockOverride && currentHour < 6) {
+          await auth.signOut();
+          status.innerText = 'You have clocked out. Login allowed after 6 AM or when admin unlocks.';
+          return;
+        }
+
+        // ✅ Reset unlockOverride flag after login
+        await setDoc(employeeRef, { unlockOverride: false }, { merge: true });
+
+        localStorage.setItem('userType', 'employee');
+        window.location.href = 'emp-dashboard.html';
+
+      } catch (err) {
+        status.innerText = 'Login failed. Check your credentials.';
       }
     }
+  }
 
-    // Attach event listener
-    document.getElementById('loginBtn').addEventListener('click', handleLogin);
-  </script>
+  document.getElementById('loginBtn').addEventListener('click', handleLogin);
+</script>
 </body>
 </html>

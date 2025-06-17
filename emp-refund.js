@@ -1,42 +1,75 @@
-// refund.js
-import { db, collection, doc, getDoc, setDoc, auth } from './firebase.js';
-import { serverTimestamp } from 'firebase/firestore';
+import {
+  db, collection, addDoc, doc,
+  getDoc, updateDoc, getDocs,
+  auth, serverTimestamp
+} from './firebase.js';
 
-document.querySelector('button[onclick*="refundProduct"]').addEventListener('click', refundProduct);
+// 🔁 Load product names into the dropdown with readable names
+export async function loadProductNames() {
+  const productSelect = document.getElementById('productSelect');
+  productSelect.innerHTML = '<option value="">Select product</option>';
 
-async function refundProduct() {
-  const name = document.getElementById('product').value.trim();
+  const snapshot = await getDocs(collection(db, 'products'));
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const option = document.createElement('option');
+    option.value = docSnap.id;
+    option.textContent = data.name || docSnap.id; // Use readable name if available
+    productSelect.appendChild(option);
+  });
+}
+
+// ↩️ Process refund and update stock
+export async function refundProduct() {
+  const productId = document.getElementById('productSelect').value;
   const amount = parseInt(document.getElementById('amount').value);
   const reason = document.getElementById('reason').value.trim();
 
-  if (!name || !amount || !reason) {
-    alert("Please fill out all fields.");
+  if (!productId || !amount || !reason) {
+    alert('Please fill out all fields.');
     return;
   }
 
-  try {
-    const snap = await getDoc(doc(db, 'products', name));
-    if (!snap.exists()) {
-      alert('Product not found.');
-      return;
-    }
-
-    const price = snap.data().price * amount;
-
-    await setDoc(doc(collection(db, 'sales')), {
-      product: name,
-      amount,
-      price,
-      reason,
-      type: 'refund',
-      employee: auth.currentUser.uid,
-      time: serverTimestamp()
-    });
-
-    alert('✅ Refund recorded successfully.');
-    location.reload();
-  } catch (err) {
-    console.error("Refund Error:", err);
-    alert('❌ Failed to record refund. Try again.');
+  const productRef = doc(db, 'products', productId);
+  const snap = await getDoc(productRef);
+  if (!snap.exists()) {
+    alert('Product not found.');
+    return;
   }
+
+  const productData = snap.data();
+  const name = productData.name || productId;
+  const price = productData.price;
+  const oldStock = productData.amount ?? 0;
+
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    alert('You must be logged in.');
+    return;
+  }
+
+  const soldBy = currentUser.email;
+
+  // 🔐 Save refund to sales history
+  await addDoc(collection(db, 'sales'), {
+    name,
+    amount,
+    price,
+    reason,
+    soldBy,
+    type: 'refund',
+    timestamp: serverTimestamp()
+  });
+
+  // ➕ Add refunded amount back to stock
+  await updateDoc(productRef, {
+    amount: oldStock + amount
+  });
+
+  alert('Refund processed and stock updated.');
+  location.reload();
 }
+
+// ⏳ Initialize on DOM ready
+window.addEventListener('DOMContentLoaded', loadProductNames);
+window.refundProduct = refundProduct;

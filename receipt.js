@@ -1,74 +1,70 @@
-// receipt.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { db } from './firebase.js';
+import { doc, getDoc, getDocs, collection } from './firebase.js';
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  // ... other config values
-};
+const selectedDate = localStorage.getItem('receiptDate');
 
-// Init Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const receiptDate = document.getElementById('receiptDate');
+const totalItems = document.getElementById('totalItems');
+const totalQuantity = document.getElementById('totalQuantity');
+const totalAmount = document.getElementById('totalAmount');
+const receiptTableBody = document.getElementById('receiptTableBody');
 
-// Helpers
-function getDateParam() {
-  const url = new URL(window.location.href);
-  return url.searchParams.get('date');
-}
-
-function formatTime(date) {
-  return new Date(date).toLocaleString();
-}
-
-// Load Receipt
 async function loadReceipt() {
-  const receiptDate = getDateParam();
-  if (!receiptDate) return alert("No date provided.");
+  if (!selectedDate) {
+    alert("❌ No receipt date selected.");
+    return;
+  }
 
-  document.getElementById("receiptDate").textContent = receiptDate;
+  try {
+    // Get summary data from dailySummaries/{date}
+    const summaryDocRef = doc(db, 'dailySummaries', selectedDate);
+    const summarySnap = await getDoc(summaryDocRef);
 
-  const start = new Date(receiptDate + "T00:00:00");
-  const end = new Date(receiptDate + "T23:59:59");
+    if (!summarySnap.exists()) {
+      alert("📭 No receipt summary found for this date.");
+      return;
+    }
 
-  const q = query(
-    collection(db, "sales"),
-    where("timestamp", ">=", Timestamp.fromDate(start)),
-    where("timestamp", "<=", Timestamp.fromDate(end))
-  );
+    const summaryData = summarySnap.data();
 
-  const snapshot = await getDocs(q);
-  const tbody = document.getElementById("receiptTableBody");
+    // Display summary
+    receiptDate.textContent = selectedDate;
+    totalItems.textContent = "-"; // Not stored; optional to calculate
+    totalQuantity.textContent = summaryData.totalQuantity || 0;
+    totalAmount.textContent = summaryData.totalAmount?.toLocaleString() || "0";
 
-  let totalItems = 0;
-  let totalQty = 0;
-  let totalAmount = 0;
+    // Get individual item receipts from dailySummaries/{date}/receipts
+    const receiptsSnap = await getDocs(collection(db, `dailySummaries/${selectedDate}/receipts`));
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const amount = data.price * data.amount;
+    const mergedSales = {};
+    receiptsSnap.forEach(docSnap => {
+      const r = docSnap.data();
+      mergedSales[r.item] = {
+        qty: r.quantity,
+        totalPrice: r.total,
+        stockLeft: r.stockLeft ?? "-"
+      };
+    });
 
-    totalItems++;
-    totalQty += data.amount;
-    totalAmount += amount;
+    renderTable(mergedSales);
+  } catch (error) {
+    console.error("❌ Error loading receipt:", error);
+    alert("❌ Failed to load receipt.");
+  }
+}
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${data.productName}</td>
-      <td>${data.amount}</td>
-      <td>₦${data.price}</td>
-      <td>${data.soldBy}</td>
-      <td>${formatTime(data.timestamp.toDate())}</td>
+function renderTable(mergedSales) {
+  for (const [product, info] of Object.entries(mergedSales)) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${product}</td>
+      <td>${info.qty}</td>
+      <td>₦${info.totalPrice.toLocaleString()}</td>
+      <td>-</td>
+      <td>${info.stockLeft}</td>
     `;
-    tbody.appendChild(row);
-  });
-
-  document.getElementById("totalItems").textContent = totalItems;
-  document.getElementById("totalQuantity").textContent = totalQty;
-  document.getElementById("totalAmount").textContent = totalAmount;
+    receiptTableBody.appendChild(tr);
+  }
 }
 
 loadReceipt();

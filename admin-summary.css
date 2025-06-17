@@ -1,0 +1,278 @@
+/* Layout */
+.summary-container {
+  padding: 20px;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+  color: #fff;
+}
+
+.top-summary-boxes {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.summary-box {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+  backdrop-filter: blur(14px);
+  color: #fff;
+}
+
+.summary-box:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.summary-box h3 {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.5px;
+}
+
+.summary-box p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00c853;
+  margin-top: 5px;
+}
+
+/* Popup */
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 20px;
+  max-width: 90%;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  position: relative;
+  animation: popIn 0.4s ease;
+}
+
+/* Updated Table Styling */
+.popup-content table,
+.sales-table table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  color: #eee;
+}
+
+.popup-content th,
+.popup-content td,
+.sales-table th,
+.sales-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  font-weight: 500;
+  color: #fff;
+}
+
+.popup-content thead,
+.sales-table thead {
+  background-color: rgba(0, 200, 83, 0.3);
+  color: #00c853;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.popup-content tbody tr:hover,
+.sales-table tbody tr:hover {
+  background-color: rgba(0, 200, 83, 0.1);
+  cursor: pointer;
+}
+
+/* Scrollbar Styling */
+.popup-content::-webkit-scrollbar,
+.sales-table-card::-webkit-scrollbar {
+  height: 8px;
+}
+
+.popup-content::-webkit-scrollbar-track,
+.sales-table-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.popup-content::-webkit-scrollbar-thumb,
+.sales-table-card::-webkit-scrollbar-thumb {
+  background-color: #00c853;
+  border-radius: 4px;
+}
+
+/* Sales Table Card */
+.sales-table-card {
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  margin-bottom: 2rem;
+}
+
+.sales-table h3 {
+  margin-bottom: 10px;
+  color: #fff;
+  letter-spacing: 0.7px;
+}
+
+.popup-content h2 {
+  margin-bottom: 1rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+#addProductBtn {
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  background: #00c853;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#addProductBtn:hover {
+  background: #00b248;
+}
+
+.close-popup {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.close-popup:hover {
+  color: #00c853;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 20px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  animation: popIn 0.4s ease;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content input {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.modal-content input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-content button {
+  background: #00c853;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.modal-content button:hover {
+  background: #00b248;
+}
+
+.close-modal {
+  margin-top: 15px;
+  color: #ff4444;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+}
+
+.close-modal:hover {
+  color: #ff2222;
+}
+
+/* Animations */
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive: Ensure it fits mobile */
+@media (max-width: 600px) {
+  .popup-content table,
+  .sales-table table {
+    font-size: 0.85rem;
+  }
+
+  .popup-content th, .popup-content td,
+  .sales-table th, .sales-table td {
+    padding: 8px;
+  }
+
+  #addProductBtn,
+  .modal-content button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+}

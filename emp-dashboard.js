@@ -1,5 +1,5 @@
 // employee-dashboard.js
-import { auth, db, doc, getDoc } from './firebase.js';
+import { auth, db, doc, getDoc, onAuthStateChanged } from './firebase.js';
 
 const welcomeEl = document.getElementById('welcomeMessage');
 
