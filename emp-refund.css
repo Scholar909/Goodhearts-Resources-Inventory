@@ -10,7 +10,9 @@
 body {
   min-height: 100vh;
   background: linear-gradient(135deg, #232526, #414345);
-  display: flex;
+  display: block;
+  margin: 0;
+  padding: 0;
   justify-content: center;
   align-items: center;
   padding: 2rem 1rem 5rem;

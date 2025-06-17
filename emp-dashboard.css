@@ -12,12 +12,13 @@
 body {
   min-height: 100vh;
   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   animation: fadeIn 0.6s ease-in;
   color: #ffffff;
-  padding: 1rem;
+  padding: 0;
+  margin: 0;
 }
 
 /* Dashboard Glass Card */
