@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Body */
@@ -97,26 +97,6 @@ body {
 
 .refund button:hover {
   background: #dd2c00;
-}
-
-/* Back Button */
-button[onclick*="employee_dashboard"] {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: all 0.3s ease;
-}
-
-button[onclick*="employee_dashboard"]:hover {
-  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Animations */
