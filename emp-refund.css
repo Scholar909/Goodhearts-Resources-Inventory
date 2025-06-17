@@ -8,15 +8,13 @@
 
 /* Body */
 body {
-  min-height: 100vh;
   background: linear-gradient(135deg, #232526, #414345);
-  display: block;
   margin: 0;
   padding: 0;
+  align-content: center;
   justify-content: center;
-  align-items: center;
-  padding: 2rem 1rem 5rem;
   animation: fadeIn 0.5s ease-in;
+  max-height: 100%;
 }
 
 /* Refund Card */
@@ -43,6 +41,7 @@ body {
   color: #ffeb3b;
   background-color: rgba(255, 255, 255, 0.15);
   padding: 0.8rem;
+  display: flex;
   border-radius: 10px;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -131,11 +130,7 @@ button[onclick*="employee_dashboard"]:hover {
   100% { transform: scale(1); opacity: 1; }
 }
 
-@media (max-width: 480px) {
-  body {
-    padding: 1rem 0.5rem 2rem;
-    align-items: flex-start;
-  }
+@media (max-width: 600px) {
 
   .refund {
     padding: 1.2rem;
