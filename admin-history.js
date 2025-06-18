@@ -49,77 +49,81 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🕔 CLOCK OUT (Block employee login until 6:00 AM next day)
-  if (clockOutBtn) {
-    clockOutBtn.addEventListener("click", async () => {
-      const salesSnapshot = await getDocs(collection(db, "sales"));
-      const productsSnapshot = await getDocs(collection(db, "products"));
 
-      const today = new Date().toISOString().split("T")[0];
-      const productStockMap = {};
-      const mergedSales = {};
-      let totalAmount = 0;
-      let totalQty = 0;
+  async function performClockOut() {
+  const salesSnapshot = await getDocs(collection(db, "sales"));
+  const productsSnapshot = await getDocs(collection(db, "products"));
 
-      productsSnapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        productStockMap[data.name] = data.amount;
-      });
+  const today = new Date().toISOString().split("T")[0];
+  const productStockMap = {};
+  const mergedSales = {};
+  let totalAmount = 0;
+  let totalQty = 0;
 
-      salesSnapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const date = new Date(data.timestamp.toDate()).toISOString().split("T")[0];
+  productsSnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    productStockMap[data.name] = data.amount;
+  });
 
-        if (date === today && data.type === "sold") {
-          const name = data.name;
-          const qty = data.amount;
-          const price = data.price * qty;
+  salesSnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const date = new Date(data.timestamp.toDate()).toISOString().split("T")[0];
 
-          if (!mergedSales[name]) {
-            mergedSales[name] = { quantity: 0, total: 0 };
-          }
+    if (date === today && data.type === "sold") {
+      const name = data.name;
+      const qty = data.amount;
+      const price = data.price * qty;
 
-          mergedSales[name].quantity += qty;
-          mergedSales[name].total += price;
-
-          totalAmount += price;
-          totalQty += qty;
-        }
-      });
-
-      for (const name in mergedSales) {
-        mergedSales[name].stockLeft = productStockMap[name] ?? "-";
+      if (!mergedSales[name]) {
+        mergedSales[name] = { quantity: 0, total: 0 };
       }
 
-      await setDoc(doc(db, "dailySummaries", today), {
-        date: today,
-        totalAmount,
-        totalQuantity: totalQty,
-        timestamp: new Date()
-      });
+      mergedSales[name].quantity += qty;
+      mergedSales[name].total += price;
 
-      const receiptsCollectionRef = collection(db, `dailySummaries/${today}/receipts`);
-      for (const [item, data] of Object.entries(mergedSales)) {
-        await setDoc(doc(receiptsCollectionRef, item), {
-          item,
-          quantity: data.quantity,
-          amount: data.total / data.quantity,
-          total: data.total,
-          stockLeft: data.stockLeft
-        });
-      }
+      totalAmount += price;
+      totalQty += qty;
+    }
+  });
 
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(6, 0, 0, 0);
+  for (const name in mergedSales) {
+    mergedSales[name].stockLeft = productStockMap[name] ?? "-";
+  }
 
-      // Store the block timestamp in Firestore (global lock)
-      await setDoc(doc(db, "settings", "loginControl"), {
-        clockedOutUntil: tomorrow.toISOString()
-      });
+  await setDoc(doc(db, "dailySummaries", today), {
+    date: today,
+    totalAmount,
+    totalQuantity: totalQty,
+    timestamp: new Date()
+  });
 
-      alert("✅ Clocked out. Employees can't log in until 6:00 AM tomorrow.");
+  const receiptsCollectionRef = collection(db, `dailySummaries/${today}/receipts`);
+  for (const [item, data] of Object.entries(mergedSales)) {
+    await setDoc(doc(receiptsCollectionRef, item), {
+      item,
+      quantity: data.quantity,
+      amount: data.total / data.quantity,
+      total: data.total,
+      stockLeft: data.stockLeft
     });
   }
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(6, 0, 0, 0);
+
+  await setDoc(doc(db, "settings", "loginControl"), {
+    clockedOutUntil: tomorrow.toISOString()
+  });
+
+  alert("✅ Clocked out. Employees can't log in until 6:00 AM tomorrow.");
+}
+
+// 👇 keep this so the manual button still works
+if (clockOutBtn) {
+  clockOutBtn.addEventListener("click", performClockOut);
+}
+
 
 // 🔓 UNLOCK MANUALLY
 if (unlockBtn) {

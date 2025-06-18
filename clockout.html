@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Auto Clock Out</title>
+</head>
+<body>
+  <h2>🕔 Auto Clock Out Running...</h2>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import {
+      collection,
+      getDocs,
+      doc,
+      setDoc
+    } from './firebase.js';
+
+    async function performClockOut() {
+      const salesSnapshot = await getDocs(collection(db, "sales"));
+      const productsSnapshot = await getDocs(collection(db, "products"));
+
+      const today = new Date().toISOString().split("T")[0];
+      const productStockMap = {};
+      const mergedSales = {};
+      let totalAmount = 0;
+      let totalQty = 0;
+
+      productsSnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        productStockMap[data.name] = data.amount;
+      });
+
+      salesSnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const date = new Date(data.timestamp.toDate()).toISOString().split("T")[0];
+
+        if (date === today && data.type === "sold") {
+          const name = data.name;
+          const qty = data.amount;
+          const price = data.price * qty;
+
+          if (!mergedSales[name]) {
+            mergedSales[name] = { quantity: 0, total: 0 };
+          }
+
+          mergedSales[name].quantity += qty;
+          mergedSales[name].total += price;
+
+          totalAmount += price;
+          totalQty += qty;
+        }
+      });
+
+      for (const name in mergedSales) {
+        mergedSales[name].stockLeft = productStockMap[name] ?? "-";
+      }
+
+      await setDoc(doc(db, "dailySummaries", today), {
+        date: today,
+        totalAmount,
+        totalQuantity: totalQty,
+        timestamp: new Date()
+      });
+
+      const receiptsCollectionRef = collection(db, `dailySummaries/${today}/receipts`);
+      for (const [item, data] of Object.entries(mergedSales)) {
+        await setDoc(doc(receiptsCollectionRef, item), {
+          item,
+          quantity: data.quantity,
+          amount: data.total / data.quantity,
+          total: data.total,
+          stockLeft: data.stockLeft
+        });
+      }
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(6, 0, 0, 0);
+
+      await setDoc(doc(db, "settings", "loginControl"), {
+        clockedOutUntil: tomorrow.toISOString()
+      });
+
+      console.log("✅ Auto Clock Out complete.");
+    }
+
+    // 🚀 Run it immediately when page loads
+    performClockOut();
+  </script>
+</body>
+</html>
