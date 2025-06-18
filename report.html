@@ -99,15 +99,15 @@
           });
 
           // Send WhatsApp message
-          const phone = "2348118663849";
-          const apikey = "4093230";
+          const phone = "2348065597364";
+          const apikey = "3003986";
           const message = `📩 *New Employee Report Submitted*
 👤 *Name:* ${employeeName}
 📧 *Email:* ${employeeEmail}
 📝 *Title:* ${title}
 🗒 *Details:* ${details}
 📅 *Date:* ${date}
-🔗 [View Report](https://yourdomain.com/admin-report.html)`;
+🔗 [View Report](https://scholar909.github.io/Goodhearts-Resources-Inventory/admin-report.html)`;
 
           const encodedMsg = encodeURIComponent(message);
           const whatsappUrl = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodedMsg}&apikey=${apikey}`;
@@ -118,7 +118,7 @@
           }
 
           alert("✅ Report submitted and admin notified.");
-          location.href = 'employee_dashboard.html';
+          location.href = 'employee-dashboard.html';
 
         } catch (error) {
           console.error("❌ Error submitting report:", error);

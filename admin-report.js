@@ -109,8 +109,8 @@ function loadReportsLive() {
 
 // ======= Send WhatsApp notification to admin =======
 function sendWhatsAppNotification(name, title, date, email) {
-  const phone = "2348118663849";
-  const apikey = "4093230";
+  const phone = "2348065597364";
+  const apikey = "3003986";
   const url = "https://scholar909.github.io/Goodhearts-Resources-Inventory/admin-report.html";
 
   const message = `🆕 *New Employee Report Received*\n👤 Name: ${name}\n📄 Title: ${title}\n📅 Date: ${date}\n📧 Email: ${email}\n🔗 View at: ${url}`;
